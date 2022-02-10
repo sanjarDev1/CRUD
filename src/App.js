@@ -1,10 +1,11 @@
 import React from 'react'
-import Crud from './CRUD/index2.jsx'
+import Crud from './CRUD/index.jsx'
+import { Wrapper } from './style.js';
  const App = () => {
   return (
-    <div>
+    <Wrapper>
       <Crud />
-    </div>
+    </Wrapper>
   )
 }
 

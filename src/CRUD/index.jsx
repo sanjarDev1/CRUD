@@ -1,23 +1,37 @@
-import React, { useState } from "react";
+import { Collapse } from "antd";
+import React, { useEffect, useState } from "react";
+import { Btn, Table, Cont, Td, Th, Wrapper, Input, SaveBtn } from "./style";
 
 const Crud = () => {
-  const [data, setData] = useState([
-    { id: 1, name: "Fozilhon" },
-    { id: 2, name: "Qobiljon" },
-    { id: 3, name: "Sanjarbek" },
-    { id: 4, name: "Nodir" },
-  ]);
+  const hotira = localStorage.getItem("WebCode");
+
+  const [data, setData] = useState(
+    hotira
+      ? JSON.parse(hotira)
+      : [
+          { id: 1, name: "Fozilhon" },
+          { id: 2, name: "Qobiljon" },
+          { id: 3, name: "Sanjarbek" },
+          { id: 4, name: "Nodir" },
+        ]
+  );
+
+  localStorage.setItem("WebCode", JSON.stringify(data));
 
   const [names, setNames] = useState("");
   const [select, setSelect] = useState(null);
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
+
+  //  GET DELETE
 
   const getDelete = (item) => {
     const newArray = data.filter((value) => value.id !== item);
     setData(newArray);
-    setSelect(null)
+    console.log(newArray);
+    setSelect(null);
   };
 
+  // SAVE
   const getSave = () => {
     const newData = [
       ...data,
@@ -26,65 +40,72 @@ const Crud = () => {
         name: names,
       },
     ];
-    setData(newData);
+    names && setData(newData);
   };
 
   // Edit
 
   const getEdit = (value) => {
     setSelect(value.id);
-    setTitle(value.name)
+    setTitle(value.name);
   };
 
-
-  const getEditSave = ()=>{
-      const newArraying = data.map((value)=>select === value.id ? {...value, name: title} : value)
-      setData(newArraying);
-      setSelect(null);
-
-  }
+  const getEditSave = () => {
+    const newArraying = data.map((value) =>
+      select === value.id ? { ...value, name: title } : value
+    );
+    setData(newArraying);
+    setSelect(null);
+  };
 
   return (
-    <div>
-      <h1>{names}</h1>
-      <input
-        type="text"
-        onChange={(e) => setNames(e.target.value)}
-        placeholder="write name..."
-      />
-      <button onClick={getSave} value={null}>Save</button>
-      <table border="1px" style={{ width: "250px" }}>
+    <Wrapper>
+      <Cont>
+        <Input
+          type="text"
+          onChange={(e) => setNames(e.target.value)}
+          placeholder="write name..."
+        />
+        <SaveBtn onClick={getSave} value={null}>
+          Save
+        </SaveBtn>
+      </Cont>
+      <Table>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Action</th>
+            <Th>ID</Th>
+            <Th>Name</Th>
+            <Th>Action</Th>
           </tr>
         </thead>
         <tbody>
           {data.map((value) => (
             <tr key={value.id}>
-              <td>{value.id}</td>
-              <td>
+              <Td>{value.id}</Td>
+              <Td>
                 {select === value.id ? (
-                  <input type="text" value={title} onChange={(e)=>setTitle(e.target.value)} />
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
                 ) : (
                   value.name
                 )}
-              </td>
-              <td>
-                <button onClick={() => getDelete(value.id)}>delete</button>
+              </Td>
+              <Td>
+                <Btn onClick={() => getDelete(value.id)}>delete</Btn>
                 {select === value.id ? (
-                  <button onClick={getEditSave}>save</button>
+                  <Btn onClick={getEditSave}>save</Btn>
                 ) : (
-                  <button onClick={() => getEdit(value)}>edit</button>
+                  <Btn onClick={() => getEdit(value)}>edit</Btn>
                 )}
-              </td>
+              </Td>
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+      </Table>
+    </Wrapper>
   );
 };
 
